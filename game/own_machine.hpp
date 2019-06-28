@@ -12,6 +12,9 @@ std::deque<std::pair<long, long>> missile;
 
 } // namespace bullet
 
+std::deque<int> input_char;
+bool living_player = true;
+
 class OWN_MACHINE
 {
     int life;        //残機
@@ -79,5 +82,58 @@ public:
         }
     }
 };
+OWN_MACHINE own;
+
+void players_move()
+{
+    initscr();
+    // start_color();
+    crmode();
+    noecho();
+    curs_set(0);
+    int ch;
+
+    int ch;
+    long ox, oy;
+
+    getmaxyx(stdscr, oy, ox);
+    own.position = {ox / 2, oy * 3 / 4};
+    mvprintw(own.position.second, own.position.first, "A");
+    refresh();
+
+    while (1)
+    {
+        ch = input_char.front();
+        if (ch == 'w')
+        {
+            own.move_machine(1);
+            input_char.pop_front();
+        }
+        else if (ch == 'd')
+        {
+            own.move_machine(2);
+            input_char.pop_front();
+        }
+        else if (ch == 's')
+        {
+            own.move_machine(3);
+            input_char.pop_front();
+        }
+        else if (ch == 'a')
+        {
+            own.move_machine(0);
+            input_char.pop_front();
+        }
+        clear();
+        mvaddch(own.position.second, own.position.first, 'A');
+        refresh();
+    }
+
+    endwin();
+}
+
+    
+
+
 
 } // namespace own_machine
