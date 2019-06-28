@@ -132,8 +132,41 @@ void players_move()
     endwin();
 }
 
-    
+void players_attack()
+{
 
+    initscr();
+    crmode();
+    noecho();
+    curs_set(0);
+    int ch;
 
+    while (living_player)
+    {
+        ch = input_char.front();
+        if (ch == 'm')
+        {
+            own.sweeping();
+            input_char.pop_front();
+        }
+        else if (ch == 'l')
+        {
+            own.firering();
+            input_char.pop_front();
+        }
+        clear();
+        for (auto &x : bullet::machine_gun)
+        {
+            mvaddch(x.second, x.first, '|');
+        }
+        for (auto &x : bullet::missile)
+        {
+            mvaddch(x.second, x.first, '!');
+        }
+        refresh();
+    }
+
+    endwin();
+}
 
 } // namespace own_machine
