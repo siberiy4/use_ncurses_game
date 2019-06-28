@@ -93,7 +93,6 @@ void players_move()
     curs_set(0);
     int ch;
 
-    int ch;
     long ox, oy;
 
     getmaxyx(stdscr, oy, ox);
@@ -167,6 +166,14 @@ void players_attack()
     }
 
     endwin();
+}
+
+void input(){
+    while (living_player)
+    {
+        int ch = getch();
+        input_char.push_back(ch);
+    }
 }
 
 } // namespace own_machine

@@ -1,45 +1,25 @@
 #include <ncurses.h>
 #include "own_machine.hpp"
 #include <locale.h>
+#include <thread>
+#include <iostream>
 
 void main_game()
 {
-    int ch;
-    long ox, oy;
-    own_machine::OWN_MACHINE own;
-
-    /*
-    getmaxyx(stdscr, oy, ox);
-    // own.position = {ox * 3 / 4, oy * 3 / 4};
-    // own.position = {ox * 3 / 4, oy * 3 / 4};
-*/
-    mvprintw(own.position.second, own.position.first, "A");
-
-    refresh();
-
-    while (1)
+    try
     {
-        ch = getch();
-        if (ch == 'w')
-        {
-            own.move_machine(1);
-        }
-        else if (ch == 'd')
-        {
-            own.move_machine(2);
-        }
-        else if (ch == 's')
-        {
-            own.move_machine(3);
-        }
-        else if (ch == 'a')
-        {
-            own.move_machine(0);
-        }
+        std::thread th_a(own_machine::players_move);
+        //      std::thread th_b(own_machine::players_attack);
+        std::thread th_c(own_machine::input);
 
-        mvaddch(own.position.second, own.position.first, 'A');
-        refresh();
+        th_a.join();
+        //     th_b.join();
+        th_c.join();
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
     }
 
-    endwin();
+    //endwin();
 }
