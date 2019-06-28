@@ -1,7 +1,7 @@
 #include <utility>
 #include <deque>
 #include <ncurses.h>
-
+#include <unistd.h>
 namespace enemyes
 {
 namespace bullet
@@ -78,7 +78,7 @@ void spawn_enemy()
         for (int k = 0; k < 2; k++)
         {
 
-            ENEMY tmp(x, y, i, k);
+            ENEMY tmp(x, y, bool(i), bool(k));
         }
     }
 }
