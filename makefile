@@ -1,4 +1,4 @@
 LDLIBS=-lncursesw
 
 XEVIOUS : 
-	g++ -std=c++14 main.cpp -o XEVIOUS
+	g++ -std=c++14 main.cpp -o XEVIOUS -lncursesw -pthread
