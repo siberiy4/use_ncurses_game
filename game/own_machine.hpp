@@ -158,7 +158,7 @@ void input()
         }
         if (check)
         {
-            input_char.push_back(ch);
+            input_char.emplace_back(ch);
         }
     }
 }
