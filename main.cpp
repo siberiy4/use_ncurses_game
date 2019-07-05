@@ -12,7 +12,6 @@ int main(int argc, char const *argv[])
     crmode();
     noecho();
     curs_set(0);
-
     main_game();
 
     /*

@@ -2,6 +2,7 @@
 #include <deque>
 #include <ncurses.h>
 #include <locale.h>
+#include <vector>
 
 namespace own_machine
 {
@@ -86,17 +87,8 @@ OWN_MACHINE own;
 
 void players_move()
 {
-    initscr();
-    // start_color();
-    crmode();
-    noecho();
-    curs_set(0);
     int ch;
 
-    long ox, oy;
-
-    getmaxyx(stdscr, oy, ox);
-    own.position = {ox / 2, oy * 3 / 4};
     mvprintw(own.position.second, own.position.first, "A");
     refresh();
 
@@ -123,22 +115,15 @@ void players_move()
             own.move_machine(0);
             input_char.pop_front();
         }
-        clear();
-        mvaddch(own.position.second, own.position.first, 'A');
-        refresh();
     }
-
-    endwin();
 }
 
 void players_attack()
 {
 
-    initscr();
-    crmode();
-    noecho();
-    curs_set(0);
     int ch;
+    long ox, oy;
+    getmaxyx(stdscr, oy, ox);
 
     while (living_player)
     {
@@ -153,26 +138,28 @@ void players_attack()
             own.firering();
             input_char.pop_front();
         }
-        clear();
-        for (auto &x : bullet::machine_gun)
-        {
-            mvaddch(x.second, x.first, '|');
-        }
-        for (auto &x : bullet::missile)
-        {
-            mvaddch(x.second, x.first, '!');
-        }
-        refresh();
     }
-
-    endwin();
 }
 
-void input(){
+void input()
+{
     while (living_player)
     {
         int ch = getch();
-        input_char.push_back(ch);
+        std::vector<int> v = {
+            'w', 'a', 's', 'd', 'm', 'l'};
+        bool check = false;
+        for (auto &x : v)
+        {
+            if (x == ch)
+            {
+                check = true;
+            }
+        }
+        if (check)
+        {
+            input_char.push_back(ch);
+        }
     }
 }
 
