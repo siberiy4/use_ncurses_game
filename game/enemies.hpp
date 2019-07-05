@@ -2,7 +2,9 @@
 #include <deque>
 #include <ncurses.h>
 #include <unistd.h>
-namespace enemyes
+#include <random>
+
+namespace enemy
 {
 namespace bullet
 {
@@ -10,9 +12,9 @@ std::deque<std::pair<long, long>> enemy_attack;
 }
 class ENEMY
 {
-    int life = 1;         //残機
+    int life = 1;         //HP
     int machine_gun = 1;  //攻撃の威力
-    bool category = true; //敵種　0:地上　1:空
+    bool category = true; //敵種 0:地上1:空
     bool from = true;     //0:左から出現１：右から出現
 
     std::pair<long, long> position;
@@ -66,21 +68,28 @@ class ENEMY
     }
 };
 
-std::deque<ENEMY> enemy;
+std::deque<ENEMY> enemyes;
 
-void spawn_enemy()
+void spawn_enemy(int count)
 {
     long x, y;
     getmaxyx(stdscr, y, x);
 
-    for (int i = 0; i < 2; i++)
+    std::random_device rnd;
+    for (int m = 0; m < count; m++)
     {
-        for (int k = 0; k < 2; k++)
+        for (int i = 0; i < 2; i++)
         {
-
-            ENEMY tmp(x, y, bool(i), bool(k));
+            for (int k = 0; k < 2; k++)
+            {
+                if (rnd() % 10 < 8)
+                {
+                    ENEMY tmp(long(x), long(y), bool(i), bool(k));
+                    enemyes.push_back(tmp);
+                }
+            }
         }
     }
 }
 
-} // namespace enemyes
+} // namespace enemy
