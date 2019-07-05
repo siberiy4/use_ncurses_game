@@ -37,11 +37,11 @@ public:
 */
     void sweeping() //機銃を撃つ
     {
-        bullet::machine_gun.push_back({position.first, position.second});
+        bullet::machine_gun.push_back({position.first, position.second - 1});
     }
     void firering() //ミサイル発射
     {
-        bullet::missile.push_back({position.first, position.second});
+        bullet::missile.push_back({position.first, position.second - 1});
     }
 
     void move_machine(int direct)
@@ -51,7 +51,7 @@ public:
 
         if (direct == 1)
         { //1なら上へ
-            if (position.second > 0)
+            if (position.second > 1)
             {
                 position.second--;
             }
@@ -76,7 +76,7 @@ public:
         }
         else //0なら左へ
         {
-            if (position.first > 0)
+            if (position.first > 1)
             {
                 position.first--;
             }

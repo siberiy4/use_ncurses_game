@@ -20,7 +20,7 @@ void draw_all()
         }
         for (auto &x : own_machine::bullet::missile)
         {
-            mvaddch(x.second, x.first, '!');
+            mvaddch(x.second, x.first, '\\');
         }
 
         refresh();
