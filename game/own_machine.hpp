@@ -3,7 +3,7 @@
 #include <ncurses.h>
 #include <locale.h>
 #include <vector>
-
+#include "playerliving.hpp"
 namespace own_machine
 {
 namespace bullet
@@ -14,7 +14,6 @@ std::deque<std::pair<long, long>> missile;
 } // namespace bullet
 
 std::deque<int> input_char;
-bool living_player = true;
 
 class OWN_MACHINE
 {
@@ -125,7 +124,7 @@ void players_attack()
     long ox, oy;
     getmaxyx(stdscr, oy, ox);
 
-    while (living_player)
+    while (players_live::living_player)
     {
         ch = input_char.front();
         if (ch == 'm')
@@ -143,7 +142,7 @@ void players_attack()
 
 void input()
 {
-    while (living_player)
+    while (players_live::living_player)
     {
         int ch = getch();
         std::vector<int> v = {
