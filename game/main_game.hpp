@@ -3,6 +3,7 @@
 #include <locale.h>
 #include <thread>
 #include <iostream>
+#include <unistd.h>
 
 void draw_all()
 {
@@ -27,6 +28,15 @@ void draw_all()
     }
 }
 
+void move_something()
+{
+    while (own_machine::living_player)
+    {
+        own_machine::bullet::move_own_attack();
+        usleep(100000);
+    }
+}
+
 void main_game()
 {
     try
@@ -35,10 +45,12 @@ void main_game()
         std::thread th_b(own_machine::players_attack);
         std::thread th_c(own_machine::input);
         std::thread th_d(draw_all);
+        std::thread th_e(move_something);
         th_a.join();
         th_b.join();
         th_c.join();
         th_d.join();
+        th_e.join();
     }
     catch (const std::exception &e)
     {

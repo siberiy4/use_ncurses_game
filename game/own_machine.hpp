@@ -11,6 +11,27 @@ namespace bullet
 std::deque<std::pair<long, long>> machine_gun;
 std::deque<std::pair<long, long>> missile;
 
+void move_own_attack()
+{
+
+    for (long i = 0; i < machine_gun.size(); i++)
+    {
+        if (machine_gun[i].second == 1)
+        {
+            machine_gun.erase(machine_gun.begin() + i);
+        }
+        machine_gun[i].second--;
+    }
+    for (long i = 0; i < missile.size(); i++)
+    {
+        if (missile[i].second == 1)
+        {
+            missile.erase(missile.begin() + i);
+        }
+        missile[i].second--;
+    }
+}
+
 } // namespace bullet
 
 std::deque<int> input_char;
