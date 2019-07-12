@@ -85,6 +85,7 @@ OWN_MACHINE own;
 
 std::deque<int> input_char;
 
+/*
 
 void players_move()
 {
@@ -97,11 +98,10 @@ void players_move()
     {
         /*        {
             std::lock_guard<std::mutex> lock(in.mtx);
-*/
-        if (input_char.front() == 'w')
-        {
-            own.move_machine(1);
-            input_char.pop_front();
+if (input_char.front() == 'w')
+{
+    own.move_machine(1);
+    input_char.pop_front();
         }
         else if (input_char.front() == 'd')
         {
@@ -131,7 +131,6 @@ void players_move()
         //        }
     }
 }
-/*
 void players_attack()
 {
 
@@ -158,20 +157,37 @@ void input()
     while (players_live::living_player)
     {
         int ch = getch();
-        std::vector<int> v = {
-            'w', 'a', 's', 'd', 'm', 'l'};
+
         bool check = false;
-        for (auto &x : v)
+        if (ch == 'w')
         {
-            if (x == ch)
-            {
-                check = true;
-                break;
-            }
+            own.move_machine(1);
+            input_char.pop_front();
         }
-        if (check)
+        else if (ch == 'd')
         {
-            in.input_char.push_back(ch);
+            own.move_machine(2);
+            input_char.pop_front();
+        }
+        else if (ch == 's')
+        {
+            own.move_machine(3);
+            input_char.pop_front();
+        }
+        else if (ch == 'a')
+        {
+            own.move_machine(0);
+            input_char.pop_front();
+        }
+        else if (ch == 'm')
+        {
+            own.sweeping();
+            input_char.pop_front();
+        }
+        else if (ch == 'l')
+        {
+            own.firering();
+            input_char.pop_front();
         }
     }
 }

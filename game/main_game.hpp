@@ -32,12 +32,12 @@ void main_game()
 {
     try
     {
-        std::thread th_a(own_machine::players_move);
+        //std::thread th_a(own_machine::players_move);
         //std::thread th_b(own_machine::players_attack);
         std::thread th_b(enemy::enemys_ecology);
         std::thread th_c(own_machine::input);
         std::thread th_d(draw_all);
-        th_a.join();
+        //th_a.join();
         th_b.join();
         th_c.join();
         th_d.join();
