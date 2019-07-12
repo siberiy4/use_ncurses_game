@@ -26,13 +26,7 @@ public:
     OWN_MACHINE() : life(1), machine_gun(1), missile(1), position({1, 1})
     {
     }
-    /*
-    OWN_MACHINE(long x, long y) : life(1), machine_gun(1), missile(1)
-    {
-        position.first = x;
-        position.second = y;
-    }
-*/
+
     void sweeping() //機銃を撃つ
     {
         bullet::machine_gun.push_back({position.first, position.second - 1});
@@ -83,75 +77,6 @@ public:
 };
 OWN_MACHINE own;
 
-std::deque<int> input_char;
-
-/*
-
-void players_move()
-{
-    int ch;
-
-    mvprintw(own.position.second, own.position.first, "A");
-    refresh();
-
-    while (1)
-    {
-        /*        {
-            std::lock_guard<std::mutex> lock(in.mtx);
-if (input_char.front() == 'w')
-{
-    own.move_machine(1);
-    input_char.pop_front();
-        }
-        else if (input_char.front() == 'd')
-        {
-            own.move_machine(2);
-            input_char.pop_front();
-        }
-        else if (input_char.front() == 's')
-        {
-            own.move_machine(3);
-            input_char.pop_front();
-        }
-        else if (input_char.front() == 'a')
-        {
-            own.move_machine(0);
-            input_char.pop_front();
-        }
-        else if (input_char.front() == 'm')
-        {
-            own.sweeping();
-            input_char.pop_front();
-        }
-        else if (input_char.front() == 'l')
-        {
-            own.firering();
-            input_char.pop_front();
-        }
-        //        }
-    }
-}
-void players_attack()
-{
-
-    while (players_live::living_player)
-    {
-        {
-            std::lock_guard<std::mutex> lock(in.mtx);
-            if (in.input_char.front() == 'm')
-            {
-                own.sweeping();
-                in.input_char.pop_front();
-            }
-            else if (in.input_char.front() == 'l')
-            {
-                own.firering();
-                in.input_char.pop_front();
-            }
-        }
-    }
-}
-*/
 void input()
 {
     while (players_live::living_player)
@@ -162,32 +87,26 @@ void input()
         if (ch == 'w')
         {
             own.move_machine(1);
-            input_char.pop_front();
         }
         else if (ch == 'd')
         {
             own.move_machine(2);
-            input_char.pop_front();
         }
         else if (ch == 's')
         {
             own.move_machine(3);
-            input_char.pop_front();
         }
         else if (ch == 'a')
         {
             own.move_machine(0);
-            input_char.pop_front();
         }
         else if (ch == 'm')
         {
             own.sweeping();
-            input_char.pop_front();
         }
         else if (ch == 'l')
         {
             own.firering();
-            input_char.pop_front();
         }
     }
 }
