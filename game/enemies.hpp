@@ -161,12 +161,19 @@ void move_enemy()
 
 void enemys_ecology()
 {
+
+    int i = 0;
+
     while (living_player)
     {
-        make_enemy(2);
+        if (i % 37 == 0)
+        {
+            make_enemy(8);
+        }
+        i++;
         move_enemy();
 
-        usleep(1000000);
+        usleep(100000);
     }
 }
 

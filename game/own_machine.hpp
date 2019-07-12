@@ -5,6 +5,9 @@
 #include <locale.h>
 #include <mutex>
 #include <vector>
+#include <sys/ioctl.h>
+#include <termios.h>
+
 #include "playerliving.hpp"
 namespace own_machine
 {
@@ -77,36 +80,56 @@ public:
 };
 OWN_MACHINE own;
 
+bool kbhit()
+{
+    termios term;
+    tcgetattr(0, &term);
+
+    termios term2 = term;
+    term2.c_lflag &= ~ICANON;
+    tcsetattr(0, TCSANOW, &term2);
+
+    int byteswaiting;
+    ioctl(0, FIONREAD, &byteswaiting);
+
+    tcsetattr(0, TCSANOW, &term);
+
+    return byteswaiting > 0;
+}
+
 void input()
 {
     while (players_live::living_player)
     {
-        int ch = getch();
+        if (kbhit())
+        {
+            int ch = getch();
 
-        bool check = false;
-        if (ch == 'w')
-        {
-            own.move_machine(1);
-        }
-        else if (ch == 'd')
-        {
-            own.move_machine(2);
-        }
-        else if (ch == 's')
-        {
-            own.move_machine(3);
-        }
-        else if (ch == 'a')
-        {
-            own.move_machine(0);
-        }
-        else if (ch == 'm')
-        {
-            own.sweeping();
-        }
-        else if (ch == 'l')
-        {
-            own.firering();
+            bool check = false;
+            if (ch == 'w')
+            {
+                own.move_machine(1);
+            }
+            else if (ch == 'd')
+            {
+                own.move_machine(2);
+            }
+            else if (ch == 's')
+            {
+                own.move_machine(3);
+            }
+            else if (ch == 'a')
+            {
+                own.move_machine(0);
+            }
+            else if (ch == 'm')
+            {
+                own.sweeping();
+            }
+            else if (ch == 'l')
+            {
+                own.firering();
+            }
         }
     }
 }

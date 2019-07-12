@@ -23,6 +23,15 @@ void draw_all()
         {
             mvaddch(x.second, x.first, '\\');
         }
+        for (auto &x : enemy::land_enemyes)
+        {
+            mvaddch(x.position.second, x.position.first, '#');
+        }
+
+        for (auto &x : enemy::sky_enemyes)
+        {
+            mvaddch(x.position.second, x.position.first, '?');
+        }
 
         refresh();
     }
@@ -37,21 +46,47 @@ void move_all_bullet()
 
         for (auto itr = machine_gun.begin(); itr != machine_gun.end(); ++itr)
         {
+
             (*itr).second--;
-            if ((*itr).second == 0)
+            /*if ((*itr).second == 0)
             {
                 machine_gun.erase(itr);
-            }
+            }*/
         }
         for (auto itr = missile.begin(); itr != missile.end(); ++itr)
         {
             (*itr).second--;
-            if ((*itr).second == 0)
+            /*if ((*itr).second == 0)
             {
                 missile.erase(itr);
+            }*/
+        }
+        usleep(150000);
+    }
+}
+
+void check_live()
+{
+    while (players_live::living_player)
+    {
+
+        for (auto &x : enemy::land_enemyes)
+        {
+            if (x.position == own_machine::own.position)
+            {
+                players_live::living_player = false;
+                break;
             }
         }
-        usleep(750000);
+
+        for (auto &x : enemy::sky_enemyes)
+        {
+            if (x.position == own_machine::own.position)
+            {
+                players_live::living_player = false;
+                break;
+            }
+        }
     }
 }
 
@@ -59,16 +94,17 @@ void main_game()
 {
     try
     {
-        //std::thread th_a(move_all_bullet);
-        //std::thread th_b(own_machine::players_attack);
+        std::thread th_d(draw_all);
+        std::thread th_a(move_all_bullet);
+        std::thread th_e(check_live);
         std::thread th_b(enemy::enemys_ecology);
         std::thread th_c(own_machine::input);
-        std::thread th_d(draw_all);
 
-        //th_a.join();
-        //th_b.join();
-        th_c.join();
         th_d.join();
+        th_e.join();
+        th_a.join();
+        th_b.join();
+        th_c.join();
     }
     catch (const std::exception &e)
     {
