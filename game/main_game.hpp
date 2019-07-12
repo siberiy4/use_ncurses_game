@@ -1,3 +1,5 @@
+#pragma once
+
 #include <ncurses.h>
 #include "own_machine.hpp"
 #include "enemies.hpp"
@@ -7,10 +9,8 @@
 
 void draw_all()
 {
-    long ox, oy;
-
-    getmaxyx(stdscr, oy, ox);
-    own_machine::own.position = {ox / 2, oy * 3 / 4};
+    getmaxyx(stdscr, players_live::window_size.second, players_live::window_size.first);
+    own_machine::own.position = {players_live::window_size.first / 2, players_live::window_size.second * 3 / 4};
     while (players_live::living_player)
     {
         clear();

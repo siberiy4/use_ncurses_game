@@ -1,10 +1,12 @@
-#include <utility>
+#pragma once
+
 #include <deque>
 #include <ncurses.h>
 #include <unistd.h>
 #include <random>
 #include "playerliving.hpp"
 #include <unistd.h>
+using namespace players_live;
 namespace enemy
 {
 namespace bullet
@@ -13,6 +15,7 @@ std::deque<std::pair<long, long>> enemy_attack;
 }
 class ENEMY
 {
+public:
     int life = 1;         //HP
     int machine_gun = 1;  //攻撃の威力
     bool category = true; //敵種 0:地上1:空
@@ -35,8 +38,8 @@ class ENEMY
 
     void move_machine(int direct)
     {
-        std::pair<long, long> screen;
-        getmaxyx(stdscr, screen.second, screen.first);
+
+        getmaxyx(stdscr, window_size.second, window_size.first);
 
         if (direct == 1)
         { //1なら上へ
@@ -47,14 +50,14 @@ class ENEMY
         }
         else if (direct == 2) //２なら右へ
         {
-            if (position.first < screen.first - 1)
+            if (position.first < window_size.first - 1)
             {
                 position.first++;
             }
         }
         else if (direct == 3) //3なら下へ
         {
-            if (position.second < screen.second - 1)
+            if (position.second < window_size.second - 1)
             {
                 position.second++;
             }
@@ -75,21 +78,21 @@ std::random_device rnd;
 
 void make_enemy(int count)
 {
-    long x, y;
-    getmaxyx(stdscr, y, x);
+
+    getmaxyx(stdscr, window_size.second, window_size.first);
 
     for (int m = 0; m < count; m++)
     {
-        for (int i = 0; i < 2; i++)
+        for (long i = 0; i < 2; i++)
         {
             if (rnd() % 10 < 8)
             { //空
-                ENEMY tmp(long(x * (i + 1) / 3), 0, bool(1), bool(i));
+                ENEMY tmp((window_size.first * (i + 1) / 3), 0, bool(1), bool(i));
                 sky_enemyes.push_back(tmp);
             }
             if (rnd() % 10 < 8)
             { //地上
-                ENEMY tmp(long(x * i), long(y / 3), bool(0), bool(i));
+                ENEMY tmp((window_size.first * i), long(window_size.second / 3), bool(0), bool(i));
                 land_enemyes.push_back(tmp);
             }
         }
@@ -99,28 +102,28 @@ void move_enemy()
 {
     for (long i = 0; i < sky_enemyes.size(); i++)
     {
-        int m = rnd % 3;
+        int m = rnd() % 3;
         if (m == 0)
         {
-            sky_enemyes[i].posision.first--;
+            sky_enemyes[i].position.first--;
         }
         else if (m == 1)
         {
-            sky_enemyes[i].posision.first++;
+            sky_enemyes[i].position.first++;
         }
         else
         {
-            sky_enemyes[i].posision.second++;
+            sky_enemyes[i].position.second++;
         }
-        if (sky_enemyes[i].posision.second >= players_live::windowsize.second - 1)
+        if (sky_enemyes[i].position.second >= window_size.second - 1)
         {
             sky_enemyes.erase(sky_enemyes.begin() + i);
         }
-        else if (sky_enemyes[i].posision.first >= players_live::windowsize.first - 1)
+        else if (sky_enemyes[i].position.first >= window_size.first - 1)
         {
             sky_enemyes.erase(sky_enemyes.begin() + i);
         }
-        else if (sky_enemyes[i].posision.first <= 1)
+        else if (sky_enemyes[i].position.first <= 1)
         {
             sky_enemyes.erase(sky_enemyes.begin() + i);
         }
@@ -128,28 +131,28 @@ void move_enemy()
 
     for (long i = 0; i < land_enemyes.size(); i++)
     {
-        int m = rnd % 3;
+        int m = rnd() % 3;
         if (m == 0)
         {
-            land_enemyes[i].posision.first--;
+            land_enemyes[i].position.first--;
         }
         else if (!land_enemyes[i].from)
         {
-            land_enemyes[i].posision.first++;
+            land_enemyes[i].position.first++;
         }
         else
         {
-            land_enemyes[i].posision.second++;
+            land_enemyes[i].position.second++;
         }
-        if (land_enemyes[i].posision.second >= players_live::windowsize.second - 1)
+        if (land_enemyes[i].position.second >= window_size.second - 1)
         {
             land_enemyes.erase(land_enemyes.begin() + i);
         }
-        else if (land_enemyes[i].posision.first >= players_live::windowsize.first - 1)
+        else if (land_enemyes[i].position.first >= window_size.first - 1)
         {
             land_enemyes.erase(land_enemyes.begin() + i);
         }
-        else if (land_enemyes[i].posision.first <= 1)
+        else if (land_enemyes[i].position.first <= 1)
         {
             land_enemyes.erase(land_enemyes.begin() + i);
         }
@@ -158,7 +161,7 @@ void move_enemy()
 
 void enemys_ecology()
 {
-    while (players_live::living_player)
+    while (living_player)
     {
         make_enemy(2);
         move_enemy();

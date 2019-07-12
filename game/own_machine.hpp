@@ -1,7 +1,9 @@
-#include <utility>
+#pragma once
+
 #include <deque>
 #include <ncurses.h>
 #include <locale.h>
+#include <mutex>
 #include <vector>
 #include "playerliving.hpp"
 namespace own_machine
@@ -13,8 +15,6 @@ std::deque<std::pair<long, long>> missile;
 
 } // namespace bullet
 
-std::deque<int> input_char;
-
 class OWN_MACHINE
 {
     int life;        //残機
@@ -23,7 +23,6 @@ class OWN_MACHINE
 
 public:
     std::pair<long, long> position;
-
     OWN_MACHINE() : life(1), machine_gun(1), missile(1), position({1, 1})
     {
     }
@@ -45,8 +44,8 @@ public:
 
     void move_machine(int direct)
     {
-        std::pair<long, long> screen;
-        getmaxyx(stdscr, screen.second, screen.first);
+        using namespace players_live;
+        getmaxyx(stdscr, window_size.second, window_size.first);
 
         if (direct == 1)
         { //1なら上へ
@@ -57,18 +56,18 @@ public:
         }
         else if (direct == 2) //２なら右へ
         {
-            if (position.first < screen.first - 1)
+            if (position.first < window_size.first - 1)
             {
                 position.first++;
             }
-            else if (position.first > screen.first)
+            else if (position.first > window_size.first)
             {
-                position.first = screen.first - 1;
+                position.first = window_size.first - 1;
             }
         }
         else if (direct == 3) //3なら下へ
         {
-            if (position.second < screen.second - 1)
+            if (position.second < window_size.second - 1)
             {
                 position.second++;
             }
@@ -84,6 +83,9 @@ public:
 };
 OWN_MACHINE own;
 
+std::deque<int> input_char;
+
+
 void players_move()
 {
     int ch;
@@ -93,53 +95,64 @@ void players_move()
 
     while (1)
     {
-        ch = input_char.front();
-        if (ch == 'w')
+        /*        {
+            std::lock_guard<std::mutex> lock(in.mtx);
+*/
+        if (input_char.front() == 'w')
         {
             own.move_machine(1);
             input_char.pop_front();
         }
-        else if (ch == 'd')
+        else if (input_char.front() == 'd')
         {
             own.move_machine(2);
             input_char.pop_front();
         }
-        else if (ch == 's')
+        else if (input_char.front() == 's')
         {
             own.move_machine(3);
             input_char.pop_front();
         }
-        else if (ch == 'a')
+        else if (input_char.front() == 'a')
         {
             own.move_machine(0);
             input_char.pop_front();
         }
-    }
-}
-
-void players_attack()
-{
-
-    int ch;
-    long ox, oy;
-    getmaxyx(stdscr, oy, ox);
-
-    while (players_live::living_player)
-    {
-        ch = input_char.front();
-        if (ch == 'm')
+        else if (input_char.front() == 'm')
         {
             own.sweeping();
             input_char.pop_front();
         }
-        else if (ch == 'l')
+        else if (input_char.front() == 'l')
         {
             own.firering();
             input_char.pop_front();
         }
+        //        }
     }
 }
+/*
+void players_attack()
+{
 
+    while (players_live::living_player)
+    {
+        {
+            std::lock_guard<std::mutex> lock(in.mtx);
+            if (in.input_char.front() == 'm')
+            {
+                own.sweeping();
+                in.input_char.pop_front();
+            }
+            else if (in.input_char.front() == 'l')
+            {
+                own.firering();
+                in.input_char.pop_front();
+            }
+        }
+    }
+}
+*/
 void input()
 {
     while (players_live::living_player)
@@ -153,11 +166,12 @@ void input()
             if (x == ch)
             {
                 check = true;
+                break;
             }
         }
         if (check)
         {
-            input_char.push_back(ch);
+            in.input_char.push_back(ch);
         }
     }
 }
