@@ -11,12 +11,15 @@
 #include "playerliving.hpp"
 namespace own_machine
 {
-namespace bullet
-{
-std::deque<std::pair<long, long>> machine_gun;
-std::deque<std::pair<long, long>> missile;
+	namespace bullet
+	{
+		struct BULLET{
+			std::deque<std::pair<long, long>> machine_gun;
+			std::mutex mtx;
+		};
+		BULLET B;
 
-} // namespace bullet
+	} // namespace bullet
 
 class OWN_MACHINE
 {
@@ -32,14 +35,10 @@ public:
 
     void sweeping() //機銃を撃つ
     {
-        bullet::machine_gun.push_back({position.first, position.second - 1});
-    }
-    void firering() //ミサイル発射
-    {
-        bullet::missile.push_back({position.first, position.second - 1});
+        bullet::B.machine_gun.push_back({position.first, position.second - 1});
     }
 
-    void move_machine(int direct)
+void move_machine(int direct)
     {
         using namespace players_live;
         getmaxyx(stdscr, window_size.second, window_size.first);
@@ -125,10 +124,6 @@ void input()
             else if (ch == 'm')
             {
                 own.sweeping();
-            }
-            else if (ch == 'l')
-            {
-                own.firering();
             }
         }
     }

@@ -15,14 +15,13 @@ void draw_all()
     {
         clear();
         mvaddch(own_machine::own.position.second, own_machine::own.position.first, 'A');
-        for (auto &x : own_machine::bullet::machine_gun)
+	{
+	std::lock_guard<std::mutex> lock(own_machine::bullet::B.mtx);
+        for (auto &x : own_machine::bullet::B.machine_gun)
         {
             mvaddch(x.second, x.first, '|');
         }
-        for (auto &x : own_machine::bullet::missile)
-        {
-            mvaddch(x.second, x.first, '\\');
-        }
+	}
 
 	{
 	std::lock_guard<std::mutex> lock(enemy::E.mtx);
@@ -43,23 +42,18 @@ void move_all_bullet()
     while (players_live::living_player)
     {
 
-        for (auto itr = machine_gun.begin(); itr != machine_gun.end(); ++itr)
+	{
+	std::lock_guard<std::mutex> lock(own_machine::bullet::B.mtx);
+        for (auto itr = B.machine_gun.begin(); itr != B.machine_gun.end(); ++itr)
         {
 
             (*itr).second--;
-            /*if ((*itr).second == 0)
+            if ((*itr).second == 1)
             {
-                machine_gun.erase(itr);
-            }*/
+                B.machine_gun.erase(itr);
+            }
         }
-        for (auto itr = missile.begin(); itr != missile.end(); ++itr)
-        {
-            (*itr).second--;
-            /*if ((*itr).second == 0)
-            {
-                missile.erase(itr);
-            }*/
-        }
+	}
         usleep(150000);
     }
 }
@@ -77,15 +71,20 @@ void check_live()
             }
         }
 
-
+	{
 	std::lock_guard<std::mutex> lock(enemy::E.mtx);
 	for(auto itr=enemy::E.sky_enemyes.begin();itr!=enemy::E.sky_enemyes.end();++itr  ){
-		for(auto &x : own_machine::bullet::machine_gun){
+	
+	{
+	std::lock_guard<std::mutex> lock(own_machine::bullet::B.mtx);
+		for(auto &x : own_machine::bullet::B.machine_gun){
 			if((*itr).position==x){
 				enemy::E.sky_enemyes.erase(itr);
 		}
+		}
 	}
     }
+	}
 }
 }
 
