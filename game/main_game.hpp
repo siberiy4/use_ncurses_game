@@ -23,17 +23,16 @@ void draw_all()
         {
             mvaddch(x.second, x.first, '\\');
         }
-        for (auto &x : enemy::land_enemyes)
-        {
-            mvaddch(x.position.second, x.position.first, '#');
-        }
 
-        for (auto &x : enemy::sky_enemyes)
-        {
-            mvaddch(x.position.second, x.position.first, '?');
+	{
+	std::lock_guard<std::mutex> lock(enemy::E.mtx);
+	for(auto &x:enemy::E.sky_enemyes)
+		          { 
+	mvaddch(x.position.second, x.position.first, '?');
         }
-
+	}
         refresh();
+
     }
 }
 
@@ -69,8 +68,7 @@ void check_live()
 {
     while (players_live::living_player)
     {
-
-        for (auto &x : enemy::land_enemyes)
+        for (auto &x : enemy::E.sky_enemyes)
         {
             if (x.position == own_machine::own.position)
             {
@@ -79,15 +77,16 @@ void check_live()
             }
         }
 
-        for (auto &x : enemy::sky_enemyes)
-        {
-            if (x.position == own_machine::own.position)
-            {
-                players_live::living_player = false;
-                break;
-            }
-        }
+
+	std::lock_guard<std::mutex> lock(enemy::E.mtx);
+	for(auto itr=enemy::E.sky_enemyes.begin();itr!=enemy::E.sky_enemyes.end();++itr  ){
+		for(auto &x : own_machine::bullet::machine_gun){
+			if((*itr).position==x){
+				enemy::E.sky_enemyes.erase(itr);
+		}
+	}
     }
+}
 }
 
 void main_game()
