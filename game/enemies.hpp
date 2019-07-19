@@ -150,7 +150,7 @@ void enemys_ecology()
         i++;
         move_enemy();
 
-        usleep(100000);
+        usleep(25000);
     }
 }
 

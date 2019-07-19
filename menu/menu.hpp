@@ -1,50 +1,51 @@
-#include "menu.h"
 #include <ncurses.h>
-
-int coin = 0;
+#include"../game/main_game.hpp"
+#include"./how_to_play.hpp"
+#include<cstring>
 
 void start_menu();
-void how_to_play();
-void put_start_guid();
+
+void put_start_guide();
 
 void menu()
 {
-    int ch = getch();
-    while (1)
-    {
+    int ch ;
+	
+   	 put_start_guide();
+    while(ch=getch()){
         if (ch == 's')
         {
-            if (coin > 0)
-            {
-                coin--;
-                break;
-            }
+		main_game();
         }
-        else if (ch == 'r')
+        else if (ch == 'h')
         {
-            coin++;
-        }
-        else if (ch == 'u')
-        {
-            how_to();
-        }
+            how_to_play();
+        }else if(ch=='q'){
+		break;
+	}
+   	 put_start_guide();
     }
 }
 
 
 
-void put_start_guid()
+void put_start_guide()
 {
     //スタートメニューで表示する文
     int x, y;
     getmaxyx(stdscr, y, x);
+	clear();
+	std::string start_msg = "GAME_START(PRESS_s)";
+    mvprintw(y / 2, x / 2 - (start_msg.size() / 2),  start_msg.c_str() );
 
-    char *start_msg = "コインを入れてスタート(PRESS　S)";
-    mvprintw(y / 2, x / 2 - (strlen(start_msg) / 2), "%s", start_msg);
+    std::string use_msg = "HOW_TO_PLAY(PRESS_h)";
+    mvprintw(y / 2 + 2, x / 2 - (start_msg.size() / 2),  use_msg.c_str());
 
-    char *use_msg = "操作法(PRESS　S)";
-    mvprintw(y / 2 + 2, x / 2 - (strlen(start_msg) / 2), "%s", use_msg);
+    std::string  quit_msg = "EXIT_GAME(PRESS_q)";
+    mvprintw(y / 2 + 6, x / 2 - (quit_msg.size() / 2),  quit_msg.c_str());
+    
+    std::string game_name = "XEBIOUS";
+    mvprintw(y /4, x/2- (game_name.size()/2),  game_name.c_str());
 
-    char *coin_msg = "COIN(PRESS R):";
-    mvprintw(y -1, x -5- (strlen(coin_msg), "%s%d",( coin_msg,coin));
+	refresh();
 }
